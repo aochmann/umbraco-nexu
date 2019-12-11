@@ -1,4 +1,4 @@
-﻿namespace Our.Umbraco.Nexu.Parsers.Tests.PropertyParsers.Community
+﻿namespace Our.Umbraco.Nexu.Parsers.Tests.GridEditorParsers.Community
 {
     using System;
     using System.Linq;
@@ -12,12 +12,12 @@
 
     using Our.Umbraco.Nexu.Core;
     using Our.Umbraco.Nexu.Core.Enums;
-    using Our.Umbraco.Nexu.Parsers.PropertyParsers.Community;
+    using Our.Umbraco.Nexu.Parsers.GridEditorParsers.Community;
 
     /// <summary>
-    /// The rich text editor macro parser tests.
+    /// The rich text editor macro grid editor parser tests.
     /// </summary>
-    public class RichTextMacroParserTests : BaseParserTest
+    public class RichTextMacroGridEditorParserTests : BaseParserTest
     {
 
         private const int Media1Id = 1111;
@@ -36,6 +36,7 @@
 
 
         #region Test data
+
         private static readonly string TestData = $@"
         <p>Test Test</p>
         <p>First media:</p>
@@ -95,6 +96,7 @@
         </blockquote>
         </ins></div>
 ";
+
         #endregion
 
         [SetUp]
@@ -129,20 +131,18 @@
         /// The test is parser for valid data type.
         /// </summary>
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestIsParserForValidDataType()
         {
             // arrange
-            var dataTypeDefinition = new DataTypeDefinition(global::Umbraco.Core.Constants.PropertyEditors.TinyMCEAlias);
-
-            var parser = new RichTextEditorMacroParser(
+            var parser = new RichTextEditorMacroGridEditorParser(
                 _contentServiceMock.Object,
                 _mediaService.Object,
                 _cacheProviderMock.Object);
 
             // act
-            var result = parser.IsParserFor(dataTypeDefinition);
+            var result = parser.IsParserFor("rte");
 
             // verify
             Assert.IsTrue(result);
@@ -152,33 +152,31 @@
         /// The test is parser for in valid data type.
         /// </summary>
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestIsParserForInValidDataType()
         {
             // arrange
-            var dataTypeDefinition = new DataTypeDefinition("foo");
-
-            var parser = new RichTextEditorMacroParser(
+            var parser = new RichTextEditorMacroGridEditorParser(
                 _contentServiceMock.Object,
                 _mediaService.Object,
                 _cacheProviderMock.Object);
 
             // act
-            var result = parser.IsParserFor(dataTypeDefinition);
+            var result = parser.IsParserFor("foo");
 
             // verify
             Assert.IsFalse(result);
         }
 
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestCreatingParser()
         {
             Assert.DoesNotThrow(() =>
             {
-                var parser = new RichTextEditorMacroParser(
+                var parser = new RichTextEditorMacroGridEditorParser(
                     _contentServiceMock.Object,
                     _mediaService.Object,
                     _cacheProviderMock.Object);
@@ -188,13 +186,13 @@
         }
 
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestParserDoesNotThrowOnEmptyValue()
         {
             Assert.DoesNotThrow(() =>
             {
-                var parser = new RichTextEditorMacroParser(
+                var parser = new RichTextEditorMacroGridEditorParser(
                     _contentServiceMock.Object,
                     _mediaService.Object,
                     _cacheProviderMock.Object);
@@ -204,13 +202,13 @@
         }
 
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestParserDoesNotThrowOnNonEmptyValue()
         {
             Assert.DoesNotThrow(() =>
             {
-                var parser = new RichTextEditorMacroParser(
+                var parser = new RichTextEditorMacroGridEditorParser(
                     _contentServiceMock.Object,
                     _mediaService.Object,
                     _cacheProviderMock.Object);
@@ -222,9 +220,10 @@
         #endregion
 
         #region Media
+
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestGetLinkedEntitiesForMacroMedias()
         {
             // arrange
@@ -236,10 +235,10 @@
             _mediaService.Setup(x => x.GetById(Media1Id)).Returns(_media1Mock.Object);
             _mediaService.Setup(x => x.GetById(Media2Id)).Returns(_media2Mock.Object);
 
-            var parser = new RichTextEditorMacroParser(
-                             _contentServiceMock.Object,
-                             _mediaService.Object,
-                             _cacheProviderMock.Object);
+            var parser = new RichTextEditorMacroGridEditorParser(
+                _contentServiceMock.Object,
+                _mediaService.Object,
+                _cacheProviderMock.Object);
             // act
             var result = parser.GetLinkedEntities(html);
 
@@ -256,9 +255,10 @@
         #endregion
 
         #region Document
+
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestGetLinkedEntitiesForMacroDocuments()
         {
             // arrange
@@ -271,10 +271,10 @@
             _contentServiceMock.Setup(x => x.GetById(Document1Id)).Returns(_document1Mock.Object);
             _contentServiceMock.Setup(x => x.GetById(Document2Id)).Returns(_document2Mock.Object);
 
-            var parser = new RichTextEditorMacroParser(
-                             _contentServiceMock.Object,
-                             _mediaService.Object,
-                             _cacheProviderMock.Object);
+            var parser = new RichTextEditorMacroGridEditorParser(
+                _contentServiceMock.Object,
+                _mediaService.Object,
+                _cacheProviderMock.Object);
             // act
             var result = parser.GetLinkedEntities(html);
 
@@ -287,13 +287,14 @@
             Assert.IsTrue(entities.Exists(x => x.LinkedEntityType == LinkedEntityType.Document && x.Id == Document1Id));
             Assert.IsTrue(entities.Exists(x => x.LinkedEntityType == LinkedEntityType.Document && x.Id == Document2Id));
         }
+
         #endregion
 
         #region Media and Document
 
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestGetLinkedEntitiesForMacroMediasAndDocuments()
         {
             // arrange
@@ -309,7 +310,7 @@
             _contentServiceMock.Setup(x => x.GetById(Document1Id)).Returns(_document1Mock.Object);
             _contentServiceMock.Setup(x => x.GetById(Document2Id)).Returns(_document2Mock.Object);
 
-            var parser = new RichTextEditorMacroParser(
+            var parser = new RichTextEditorMacroGridEditorParser(
                 _contentServiceMock.Object,
                 _mediaService.Object,
                 _cacheProviderMock.Object);
@@ -331,8 +332,8 @@
         }
 
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestGetLinkedEntitiesForNonRegisteredMacroAttributes()
         {
             // arrange
@@ -342,7 +343,7 @@
             nexuContext.MacroMediaAttributeNames = "";
             nexuContext.MacroDocumentAttributeNames = "";
 
-            var parser = new RichTextEditorMacroParser(
+            var parser = new RichTextEditorMacroGridEditorParser(
                 _contentServiceMock.Object,
                 _mediaService.Object,
                 _cacheProviderMock.Object);
@@ -362,8 +363,8 @@
         /// Test getting linked entities with a empty value
         /// </summary>
         [Test]
-        [Category("PropertyParsers")]
-        [Category("CommunityPropertyParsers")]
+        [Category("GridEditorParsers")]
+        [Category("CommunityGridEditorParsers")]
         public void TestGetLinkedEntitiesWithEmptyValue()
         {
             // arrange
@@ -373,7 +374,7 @@
             nexuContext.MacroMediaAttributeNames = "";
             nexuContext.MacroDocumentAttributeNames = "";
 
-            var parser = new RichTextEditorMacroParser(
+            var parser = new RichTextEditorMacroGridEditorParser(
                 _contentServiceMock.Object,
                 _mediaService.Object,
                 _cacheProviderMock.Object);
@@ -387,6 +388,7 @@
             var entities = result.ToList();
             Assert.IsEmpty(entities);
         }
+
         #endregion
     }
 }
